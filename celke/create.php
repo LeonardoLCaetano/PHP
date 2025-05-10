@@ -1,4 +1,7 @@
 <?php
+
+session_start(); //Iniciar a sessão
+
 //Incluir o arquivo com a conexão com o banco de dados
 require_once("./connection.php");
 
@@ -15,12 +18,15 @@ require_once("./connection.php");
 
 <body>
 
+    <a href="index.php">Listar</a>
+    <h2>Cadastrar usuário.</h2>
+
     <?php
     //Receber os dados do formulário.
     $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
     //Verificar se o token CSRF é válido.
-    if (isset($data['csrf_token'])) {
+    if (isset($data['csrf_token']) && hash_equals($_SESSION['csrf_tokens']['form_create_user'], $data['csrf_token'])) {
 
         //Tratar exceções e erros
         try {
@@ -57,7 +63,16 @@ require_once("./connection.php");
 
     ?>
     <form method="POST" action="">
-        <input type="hidden" name="csrf_token" value="123456">
+        
+        <?php
+        //função random_bytes gera uma sequência de 32 números aleatórios.
+        //a função bin2hex converte os bytes binários gerados pela random_bytes em uma representação hexadecimal.
+            $token = bin2hex(random_bytes(32));
+
+        //salvar o token csrf na sessão.
+        $_SESSION['csrf_tokens']['form_create_user'] = $token;
+        ?>
+        <input type="hidden" name="csrf_token" value=<?php echo $token; ?>>
 
         <label>Nome:</label>
         <input type="text" name="name" placeholder="Nome Completo" value = "<?php echo $data['name'] ?? ''; ?>" required><br><br>
@@ -68,6 +83,12 @@ require_once("./connection.php");
         <input type="submit" value="Cadastrar"><br><br>
 
     </form>
+
+
+
+</body>
+
+</html>
 
 
 
