@@ -5,6 +5,11 @@ session_start(); //Iniciar a sessão
 //Incluir o arquivo com a conexão com o banco de dados
 require_once("./connection.php");
 
+ob_start(); //Limpar o buffer.
+
+//Receber o ID pela url.
+$id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+
 ?>
 
 <!DOCTYPE html>
@@ -18,15 +23,26 @@ require_once("./connection.php");
 
 <body>
 
-    <a href="index.php">Listar</a>
+    <a href="index.php">Listar</a><br>
+    <a href="update.php?id=<?php echo $id; ?>">Editar</a>
+    <a href="delete.php?id=<?php echo $id; ?>">Apagar</a>
 
     <h2>Visualizar Usuário</h2>
 
     <?php
 
-    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    //verificar se exista a mensagem de erro/sucesso.
+    if (isset($_SESSION['msg'])) {
 
-    //Criar a QUERY cadastrar usuário.
+        //imprimir a mensagem de erro/sucesso.
+        echo $_SESSION['msg'];
+
+        //destruir a mensagem de erro/sucesso.
+        unset($_SESSION['msg']);
+
+    }
+
+    //Criar a QUERY visualizar usuário.
     $sql = "SELECT id, name, email FROM users WHERE id = :id";
 
     //Preparar a QUERY.
