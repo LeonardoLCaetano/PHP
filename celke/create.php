@@ -50,9 +50,17 @@ require_once("./connection.php");
                 $lastId = $conn->lastInsertId();
 
                 //Exclui os dados da variável $data
-                unset($data); 
+                unset($data);
 
-                echo "Usuário cadastrado com sucesso! ID do registro: $lastId";
+                //criar a mensagem de sucesso e salvar na variável global.
+                $_SESSION['msg'] = "Usuário cadastrado com sucesso!";
+
+                //redirecionar o usuário para a página listar.
+                header("Location: view.php?id=$lastId");
+
+                //parar o processamento da página
+                return;
+
             } else {
                 echo "Usuário não cadastrado.";
             }
@@ -63,11 +71,11 @@ require_once("./connection.php");
 
     ?>
     <form method="POST" action="">
-        
+
         <?php
         //função random_bytes gera uma sequência de 32 números aleatórios.
         //a função bin2hex converte os bytes binários gerados pela random_bytes em uma representação hexadecimal.
-            $token = bin2hex(random_bytes(32));
+        $token = bin2hex(random_bytes(32));
 
         //salvar o token csrf na sessão.
         $_SESSION['csrf_tokens']['form_create_user'] = $token;
@@ -75,23 +83,17 @@ require_once("./connection.php");
         <input type="hidden" name="csrf_token" value=<?php echo $token; ?>>
 
         <label>Nome:</label>
-        <input type="text" name="name" placeholder="Nome Completo" value = "<?php echo $data['name'] ?? ''; ?>" required><br><br>
+        <input type="text" name="name" placeholder="Nome Completo" value="<?php echo $data['name'] ?? ''; ?>"
+            required><br><br>
 
         <label>Email:</label>
-        <input type="email" name="email" placeholder="Melhor email" value = "<?php echo $data['email'] ?? ''; ?>" required><br><br>
+        <input type="email" name="email" placeholder="Melhor email" value="<?php echo $data['email'] ?? ''; ?>"
+            required><br><br>
 
         <input type="submit" value="Cadastrar"><br><br>
 
     </form>
-
-
-
-</body>
-
-</html>
-
-
-
+    
 </body>
 
 </html>
