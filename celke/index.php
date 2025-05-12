@@ -54,6 +54,7 @@ require_once("./connection.php");
 
         echo "<a href = 'view.php?id=$id'>Visualizar</a><br>";
         echo "<a href = 'update.php?id=$id'>Editar</a><br>";
+        echo "<a href = 'delete.php?id=$id'>Apagar</a><br>";
 
         echo "<hr>";
     }
